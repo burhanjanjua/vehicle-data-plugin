@@ -1,4 +1,4 @@
-name: PHP Composer
+name: PHP Composer + HTML + AJAX
 
 on:
   push:
@@ -29,11 +29,30 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-php-
 
-    - name: Install dependencies
+    - name: Install PHP dependencies
       run: composer install --prefer-dist --no-progress
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
+    # ✅ Add HTML validation using htmlhint
+    - name: Install HTMLHint
+      run: npm install -g htmlhint
 
+    - name: Lint HTML files
+      run: htmlhint "**/*.html"
+
+    # ✅ Add JavaScript/AJAX linting using ESLint
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install dependencies for JS linting
+      run: |
+        npm install eslint
+        npx eslint --init
+
+    - name: Lint AJAX/JS files
+      run: npx eslint "**/*.js"
+
+    # Optional PHP test suite
     # - name: Run test suite
     #   run: composer run-script test
